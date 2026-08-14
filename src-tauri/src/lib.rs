@@ -68,7 +68,7 @@ fn navigate_to_dashboard(window: &WebviewWindow) -> tauri::Result<()> {
     }
     #[cfg(not(debug_assertions))]
     {
-        window.navigate("tauri://localhost".parse::<tauri::Url>().unwrap())
+        window.navigate("http://tauri.localhost".parse::<tauri::Url>().unwrap())
     }
 }
 

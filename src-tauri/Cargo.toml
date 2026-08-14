@@ -1,6 +1,6 @@
 [package]
 name = "better-dsh"
-version = "0.1.10"
+version = "0.1.11"
 description = "A lightweight, local-first desktop client for DeepSeek Harness, powered by Tauri"
 authors = ["better-dsh contributors"]
 edition = "2021"
@@ -8,6 +8,9 @@ edition = "2021"
 [lib]
 name = "better_dsh_lib"
 crate-type = ["staticlib", "cdylib", "rlib"]
+
+[features]
+custom-protocol = ["tauri/custom-protocol"]
 
 [build-dependencies]
 tauri-build = { version = "2", features = [] }
