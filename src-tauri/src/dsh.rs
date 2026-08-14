@@ -1,7 +1,7 @@
 use serde::Serialize;
 use std::{
     net::{TcpStream, ToSocketAddrs},
-    path::PathBuf,
+    path::{Path, PathBuf},
     process::{Child, Command, Stdio},
     sync::Mutex,
     time::Duration,
