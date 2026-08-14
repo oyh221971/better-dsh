@@ -1,6 +1,6 @@
 [package]
 name = "better-dsh"
-version = "0.1.0"
+version = "0.1.10"
 description = "A lightweight, local-first desktop client for DeepSeek Harness, powered by Tauri"
 authors = ["better-dsh contributors"]
 edition = "2021"

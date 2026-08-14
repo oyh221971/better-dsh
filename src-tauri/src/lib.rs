@@ -35,6 +35,9 @@ fn dsh_launcher() -> Option<String> {
 
 #[tauri::command]
 fn open_harness(app: AppHandle, state: State<'_, AppState>) -> Result<(), String> {
+    // Make sure the service is up before navigating to avoid a blank page.
+    let status = state.manager.start()?;
+    let _ = app.emit("dsh-status", status);
     let url = state.manager.url();
     let parsed = url.parse::<tauri::Url>().map_err(|e| e.to_string())?;
     let window = main_window(&app)?;

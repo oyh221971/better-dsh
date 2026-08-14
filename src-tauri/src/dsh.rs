@@ -115,18 +115,10 @@ impl DshManager {
         let stdout = std::fs::File::create(&stdout_path).map_err(|e| e.to_string())?;
         let stderr = std::fs::File::create(&stderr_path).map_err(|e| e.to_string())?;
 
-        let mut cmd = Command::new("cmd");
-        cmd.arg("/c")
-            .arg(dsh.to_string_lossy().to_string())
-            .arg("web")
+        let mut cmd = dsh_command(&dsh);
+        cmd.arg("web")
             .arg("--port")
             .arg(self.port.to_string());
-        #[cfg(windows)]
-        {
-            use std::os::windows::process::CommandExt;
-            const CREATE_NO_WINDOW: u32 = 0x0800_0000;
-            cmd.creation_flags(CREATE_NO_WINDOW);
-        }
         cmd.stdin(Stdio::null());
         cmd.stdout(Stdio::from(stdout));
         cmd.stderr(Stdio::from(stderr));
@@ -197,7 +189,9 @@ fn is_port_listening(port: u16) -> bool {
 }
 
 fn listener_pid(port: u16) -> Option<u32> {
-    let out = Command::new("netstat").args(["-ano", "-p", "tcp"]).output().ok()?;
+    let mut cmd = Command::new("netstat");
+    console_hidden(&mut cmd);
+    let out = cmd.args(["-ano", "-p", "tcp"]).output().ok()?;
     if !out.status.success() {
         return None;
     }
@@ -219,7 +213,9 @@ fn listener_pid(port: u16) -> Option<u32> {
 }
 
 fn kill_tree(pid: u32) -> Result<(), String> {
-    let out = Command::new("taskkill")
+    let mut cmd = Command::new("taskkill");
+    console_hidden(&mut cmd);
+    let out = cmd
         .args(["/PID", &pid.to_string(), "/T", "/F"])
         .output()
         .map_err(|e| e.to_string())?;
@@ -241,14 +237,64 @@ fn find_on_path(name: &str) -> Option<PathBuf> {
     None
 }
 
+/// Build a Command that launches the dsh CLI without creating a console
+/// window. When the launcher is an npm `.cmd` shim, run `node lib/bin.js`
+/// directly so no `cmd.exe` appears in the process chain.
+fn dsh_command(dsh: &Path) -> Command {
+    let mut cmd = match dsh_to_node(dsh) {
+        Some((node, bin)) => {
+            let mut c = Command::new(node);
+            c.arg(bin);
+            c
+        }
+        None => {
+            let mut c = Command::new("cmd");
+            c.arg("/c").arg(dsh);
+            c
+        }
+    };
+    console_hidden(&mut cmd);
+    cmd
+}
+
+/// If `dsh` is a standard npm `.cmd` shim, resolve it to
+/// `node <dir>\node_modules\@deepseek-ai\dsh\lib\bin.js`.
+fn dsh_to_node(dsh: &Path) -> Option<(PathBuf, String)> {
+    if dsh.extension().and_then(|e| e.to_str()) != Some("cmd") {
+        return None;
+    }
+    let dir = dsh.parent()?;
+    let bin = dir
+        .join("node_modules")
+        .join("@deepseek-ai")
+        .join("dsh")
+        .join("lib")
+        .join("bin.js");
+    if !bin.is_file() {
+        return None;
+    }
+    let node = if dir.join("node.exe").is_file() {
+        dir.join("node.exe")
+    } else {
+        PathBuf::from("node")
+    };
+    Some((node, bin.to_string_lossy().into_owned()))
+}
+
+/// Keep console-subsystem children (cmd, node, netstat, taskkill) from
+/// flashing a window when spawned from the windowless Tauri process.
+fn console_hidden(cmd: &mut Command) {
+    #[cfg(windows)]
+    {
+        use std::os::windows::process::CommandExt;
+        const CREATE_NO_WINDOW: u32 = 0x0800_0000;
+        cmd.creation_flags(CREATE_NO_WINDOW);
+    }
+}
+
 fn query_version() -> Option<String> {
     let dsh = DshManager::resolve_dsh()?;
-    let out = Command::new("cmd")
-        .arg("/c")
-        .arg(dsh.to_string_lossy().to_string())
-        .arg("--version")
-        .output()
-        .ok()?;
+    let out = dsh_command(&dsh).arg("--version").output().ok()?;
     if !out.status.success() {
         return None;
     }
