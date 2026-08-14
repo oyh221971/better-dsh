@@ -29,7 +29,12 @@ npm install -g @deepseek-ai/dsh
 
 ### 下载安装包 / Download
 
-从 [Releases](../../releases) 下载 `Better DSH_x.x.x_x64_en-US.msi` 安装即可。
+从 [Releases 页面](https://github.com/oyh221971/better-dsh/releases/latest) 下载最新版本：
+
+- **安装包（推荐）**：`Better-DSH_0.1.0_x64_en-US.msi` — 双击安装，自动创建开始菜单/桌面入口
+- **免安装版**：`Better-DSH_0.1.0_x64.exe` — 下载后双击直接运行，无需安装
+
+> 提示：首次运行若出现 SmartScreen 提示，点击"更多信息"→"仍要运行"即可（当前版本未签名）。
 
 ## 开发 / Development
 
