@@ -34,7 +34,20 @@ npm install -g @deepseek-ai/dsh
 - **安装包（推荐）**：`Better-DSH_0.1.0_x64_en-US.msi` — 双击安装，自动创建开始菜单/桌面入口
 - **免安装版**：`Better-DSH_0.1.0_x64.exe` — 下载后双击直接运行，无需安装
 
-> 提示：首次运行若出现 SmartScreen 提示，点击"更多信息"→"仍要运行"即可（当前版本未签名）。
+> 提示：当前版本未签名，首次运行 Windows SmartScreen 会拦截一次，点击「更多信息」→「仍要运行」即可（官方渠道下载的文件是安全的）。
+>
+> Note: builds are unsigned. If SmartScreen appears, click "More info" → "Run anyway". Files downloaded from the official Releases page are safe.
+>
+> 下载后建议校验 SHA-256，确认与官方发布一致（仅适用于 v0.1.0）：
+>
+> ```powershell
+> Get-FileHash .\Better-DSH_0.1.0_x64.exe -Algorithm SHA256
+> ```
+>
+> | 文件 | SHA-256 |
+> | --- | --- |
+> | `Better-DSH_0.1.0_x64.exe` | `1A4C19BA629877C2942CF609C9A451F3090072573CC3205728F59C839BEAB398` |
+> | `Better-DSH_0.1.0_x64_en-US.msi` | `C07D98DBB79648AB3A661169FF41E46E9E0A1100FF91B9F1B92B506F5CDDC22C` |
 
 ## 开发 / Development
 
