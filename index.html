@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Better DSH</title>
+    <link rel="stylesheet" href="/src/styles.css" />
+  </head>
+  <body>
+    <main class="app">
+      <header class="hero">
+        <div class="logo">◆</div>
+        <div>
+          <h1>Better DSH</h1>
+          <p class="tagline">DeepSeek Harness 轻量桌面客户端</p>
+        </div>
+      </header>
+
+      <section class="card status-card">
+        <div class="status-row">
+          <span id="status-dot" class="dot"></span>
+          <span id="status-text" class="status-text">检测中…</span>
+        </div>
+        <dl class="meta">
+          <div><dt>地址</dt><dd id="meta-url">-</dd></div>
+          <div><dt>PID</dt><dd id="meta-pid">-</dd></div>
+          <div><dt>dsh 版本</dt><dd id="meta-version">-</dd></div>
+          <div><dt>启动器</dt><dd id="meta-launcher" class="ellipsis">-</dd></div>
+        </dl>
+      </section>
+
+      <section class="card actions">
+        <button id="btn-start" class="btn primary">启动 DSH</button>
+        <button id="btn-stop" class="btn danger" disabled>停止 DSH</button>
+        <button id="btn-open" class="btn accent" disabled>打开 Harness</button>
+      </section>
+
+      <section class="card settings">
+        <label class="checkbox">
+          <input type="checkbox" id="chk-exit-stop" checked />
+          <span>退出应用时停止 dsh 服务</span>
+        </label>
+        <p class="hint">关闭窗口会最小化到系统托盘，服务继续在后台运行。</p>
+      </section>
+
+      <footer class="foot">
+        <p id="log-line" class="log"></p>
+      </footer>
+    </main>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>
